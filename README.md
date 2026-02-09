@@ -153,7 +153,6 @@ You can create a `screenshots` folder and add images such as:
 /screenshots/create.png
 <img width="1576" height="950" alt="image" src="https://github.com/user-attachments/assets/a84eefcd-c83e-4c8c-a2a8-f766ce0e3c31" />
 
-```
 
 ## Validation Rules
 
