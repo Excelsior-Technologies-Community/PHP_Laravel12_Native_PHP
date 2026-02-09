@@ -155,8 +155,6 @@ You can create a `screenshots` folder and add images such as:
 
 ```
 
----
-
 ## Validation Rules
 
 Name – Required
