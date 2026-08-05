@@ -12,3 +12,6 @@ Route::delete(
      '/products/{product}/image',
      [ProductController::class, 'removeImage']
 )->name('products.remove-image');
+
+Route::get('/products-export', [ProductController::class, 'export'])
+     ->name('products.export');
