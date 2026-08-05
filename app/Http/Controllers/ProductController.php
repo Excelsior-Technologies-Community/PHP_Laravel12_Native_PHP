@@ -9,26 +9,50 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of products.
      */
     public function index(Request $request)
     {
         $query = Product::query();
-        
-        // Search functionality
-        if ($request->has('search') && $request->search != '') {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+
+        // Search by Name
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
-        
-        // Order by latest
-        $products = $query->latest()->paginate(10);
-        
-        return view('products.index', compact('products'));
+
+        // Search by Category
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        // Filter by Status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Price Range
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        $products = $query->oldest()
+            ->paginate(3)
+            ->withQueryString();
+
+        $categories = Product::select('category')
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
+
+        return view('products.index', compact('products', 'categories'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show create form.
      */
     public function create()
     {
@@ -36,33 +60,44 @@ class ProductController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store Product.
      */
     public function store(Request $request)
     {
-        // Validation
         $validated = $request->validate([
+
             'name' => 'required|string|max:255',
+
+            'category' => 'required|string|max:100',
+
             'description' => 'nullable|string',
+
             'price' => 'required|numeric|min:0',
+
             'quantity' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+
+            'status' => 'required|in:Active,Inactive',
+
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
         ]);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
+
+            $validated['image'] = $request
+                ->file('image')
+                ->store('products', 'public');
         }
 
-        // Create product
         Product::create($validated);
 
-        return redirect()->route('products.index')
-                         ->with('success', 'Product created successfully!');
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * Show Product.
      */
     public function show(Product $product)
     {
@@ -70,7 +105,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Edit Product.
      */
     public function edit(Product $product)
     {
@@ -78,64 +113,78 @@ class ProductController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update Product.
      */
     public function update(Request $request, Product $product)
     {
-        // Validation
         $validated = $request->validate([
+
             'name' => 'required|string|max:255',
+
+            'category' => 'required|string|max:100',
+
             'description' => 'nullable|string',
+
             'price' => 'required|numeric|min:0',
+
             'quantity' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+
+            'status' => 'required|in:Active,Inactive',
+
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
         ]);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
+
             if ($product->image) {
+
                 Storage::disk('public')->delete($product->image);
             }
-            $validated['image'] = $request->file('image')->store('products', 'public');
+
+            $validated['image'] = $request
+                ->file('image')
+                ->store('products', 'public');
         }
 
-        // Update product
         $product->update($validated);
 
-        return redirect()->route('products.index')
-                         ->with('success', 'Product updated successfully!');
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete Product.
      */
     public function destroy(Product $product)
     {
-        // Delete image if exists
         if ($product->image) {
+
             Storage::disk('public')->delete($product->image);
         }
-        
-        // Delete product
+
         $product->delete();
 
-        return redirect()->route('products.index')
-                         ->with('success', 'Product deleted successfully!');
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product deleted successfully.');
     }
 
     /**
-     * Remove product image
+     * Remove Product Image.
      */
     public function removeImage(Product $product)
     {
         if ($product->image) {
+
             Storage::disk('public')->delete($product->image);
+
             $product->image = null;
+
             $product->save();
         }
 
-        return redirect()->back()
-                         ->with('success', 'Image removed successfully!');
+        return back()->with('success', 'Image removed successfully.');
     }
 }
