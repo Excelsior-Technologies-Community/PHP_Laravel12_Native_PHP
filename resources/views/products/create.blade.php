@@ -224,6 +224,43 @@
 
                 </div>
 
+
+                <!-- Minimum Stock Alert (Added Feature) -->
+
+                <div>
+
+                    <label class="block font-semibold mb-2">
+
+                        Minimum Stock Alert
+
+                    </label>
+
+                    <input
+                        type="number"
+                        name="minimum_stock"
+                        value="{{ old('minimum_stock',$product->minimum_stock ?? 5) }}"
+                        class="w-full border rounded-lg px-4 py-3"
+                        placeholder="Enter Minimum Stock">
+
+                    <p class="text-sm text-gray-500 mt-1">
+
+                        Alert will show when stock reaches this limit.
+
+                    </p>
+
+
+                    @error('minimum_stock')
+
+                    <p class="text-red-600 mt-1">
+
+                        {{ $message }}
+
+                    </p>
+
+                    @enderror
+
+                </div>
+
             </div>
 
 
@@ -315,7 +352,7 @@
 
                 <img
                     src="{{ asset('storage/'.$product->image) }}"
-                    class="w-40 h-40 rounded-lg object-cover border">
+                    class="w-40 h-40 rounded-lg object-contain bg-gray-100 p-2 border">
 
             </div>
 
@@ -335,7 +372,7 @@
 
                 <img
                     id="preview"
-                    class="w-40 h-40 rounded-lg border object-cover">
+                    class="w-40 h-40 rounded-lg border object-contain bg-gray-100 p-2">
 
             </div>
 

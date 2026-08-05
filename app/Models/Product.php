@@ -16,6 +16,7 @@ class Product extends Model
         'description',
         'price',
         'quantity',
+        'minimum_stock',
         'status',
         'image',
 
@@ -26,4 +27,16 @@ class Product extends Model
         'price' => 'decimal:2',
 
     ];
+
+    public function isLowStock()
+    {
+        return $this->quantity <= $this->minimum_stock
+            && $this->quantity > 0;
+    }
+
+
+    public function isOutOfStock()
+    {
+        return $this->quantity == 0;
+    }
 }

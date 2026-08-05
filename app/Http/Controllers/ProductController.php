@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\ProductsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -15,22 +17,18 @@ class ProductController extends Controller
     {
         $query = Product::query();
 
-        // Search by Name
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Search by Category
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
 
-        // Filter by Status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Price Range
         if ($request->filled('min_price')) {
             $query->where('price', '>=', $request->min_price);
         }
@@ -43,13 +41,16 @@ class ProductController extends Controller
             ->paginate(3)
             ->withQueryString();
 
+
         $categories = Product::select('category')
             ->distinct()
             ->orderBy('category')
             ->pluck('category');
 
+
         return view('products.index', compact('products', 'categories'));
     }
+
 
     /**
      * Show create form.
@@ -58,6 +59,7 @@ class ProductController extends Controller
     {
         return view('products.create');
     }
+
 
     /**
      * Store Product.
@@ -76,11 +78,15 @@ class ProductController extends Controller
 
             'quantity' => 'required|integer|min:0',
 
+            // Added for Stock Alert Feature
+            'minimum_stock' => 'required|integer|min:0',
+
             'status' => 'required|in:Active,Inactive',
 
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
 
         ]);
+
 
         if ($request->hasFile('image')) {
 
@@ -89,12 +95,16 @@ class ProductController extends Controller
                 ->store('products', 'public');
         }
 
+
         Product::create($validated);
+
 
         return redirect()
             ->route('products.index')
             ->with('success', 'Product created successfully.');
     }
+
+
 
     /**
      * Show Product.
@@ -104,6 +114,8 @@ class ProductController extends Controller
         return view('products.show', compact('product'));
     }
 
+
+
     /**
      * Edit Product.
      */
@@ -111,6 +123,8 @@ class ProductController extends Controller
     {
         return view('products.create', compact('product'));
     }
+
+
 
     /**
      * Update Product.
@@ -129,11 +143,16 @@ class ProductController extends Controller
 
             'quantity' => 'required|integer|min:0',
 
+            // Added for Stock Alert Feature
+            'minimum_stock' => 'required|integer|min:0',
+
             'status' => 'required|in:Active,Inactive',
 
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
 
         ]);
+
+
 
         if ($request->hasFile('image')) {
 
@@ -142,17 +161,24 @@ class ProductController extends Controller
                 Storage::disk('public')->delete($product->image);
             }
 
+
             $validated['image'] = $request
                 ->file('image')
                 ->store('products', 'public');
         }
 
+
+
         $product->update($validated);
+
+
 
         return redirect()
             ->route('products.index')
             ->with('success', 'Product updated successfully.');
     }
+
+
 
     /**
      * Delete Product.
@@ -164,12 +190,16 @@ class ProductController extends Controller
             Storage::disk('public')->delete($product->image);
         }
 
+
         $product->delete();
+
 
         return redirect()
             ->route('products.index')
             ->with('success', 'Product deleted successfully.');
     }
+
+
 
     /**
      * Remove Product Image.
@@ -180,11 +210,21 @@ class ProductController extends Controller
 
             Storage::disk('public')->delete($product->image);
 
+
             $product->image = null;
 
             $product->save();
         }
 
+
         return back()->with('success', 'Image removed successfully.');
+    }
+
+    public function export()
+    {
+        return Excel::download(
+            new ProductsExport,
+            'products.xlsx'
+        );
     }
 }
