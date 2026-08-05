@@ -10,15 +10,39 @@ class HomeController extends Controller
     {
         $products = Product::oldest()->take(6)->get();
 
+
         $totalProducts = Product::count();
+
 
         $activeProducts = Product::where('status', 'Active')->count();
 
+
         $inactiveProducts = Product::where('status', 'Inactive')->count();
+
 
         $totalStock = Product::sum('quantity');
 
+
         $categories = Product::distinct('category')->count('category');
+
+
+        // Stock Alert Analytics (Added Feature)
+
+        $lowStockProducts = Product::whereColumn(
+            'quantity',
+            '<=',
+            'minimum_stock'
+        )
+        ->where('quantity', '>', 0)
+        ->count();
+
+
+        $outOfStockProducts = Product::where(
+            'quantity',
+            0
+        )->count();
+
+
 
         return view('home', compact(
 
@@ -27,7 +51,9 @@ class HomeController extends Controller
             'activeProducts',
             'inactiveProducts',
             'totalStock',
-            'categories'
+            'categories',
+            'lowStockProducts',
+            'outOfStockProducts'
 
         ));
     }

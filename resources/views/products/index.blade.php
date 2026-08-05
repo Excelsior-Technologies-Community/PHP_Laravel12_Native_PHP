@@ -10,14 +10,33 @@
         Product Management
     </h1>
 
-    <a href="{{ route('products.create') }}"
-        class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
 
-        <i class="fas fa-plus"></i>
+    <div class="flex gap-3">
 
-        Add Product
+        <!-- Export Excel -->
 
-    </a>
+        <a href="{{ route('products.export') }}"
+            class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg">
+
+            <i class="fas fa-file-excel"></i>
+
+            Export Excel
+
+        </a>
+
+
+        <!-- Add Product -->
+
+        <a href="{{ route('products.create') }}"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
+
+            <i class="fas fa-plus"></i>
+
+            Add Product
+
+        </a>
+
+    </div>
 
 </div>
 
@@ -179,6 +198,10 @@
 
                 <th class="px-6 py-3 text-left">Quantity</th>
 
+                <th class="px-6 py-3 text-left">Min Stock</th>
+
+                <th class="px-6 py-3 text-left">Stock Status</th>
+
                 <th class="px-6 py-3 text-left">Status</th>
 
                 <th class="px-6 py-3 text-center">Action</th>
@@ -199,7 +222,7 @@
 
                     <img
                         src="{{ asset('storage/'.$product->image) }}"
-                        class="w-16 h-16 rounded object-cover">
+                        class="w-16 h-16 rounded object-contain border">
 
                     @else
 
@@ -243,13 +266,49 @@
 
                 <td class="px-6 py-4">
 
-                    ₹ {{ number_format($product->price,2) }}
+                    ₹{{ number_format($product->price,2) }}
 
                 </td>
 
                 <td class="px-6 py-4">
 
                     {{ $product->quantity }}
+
+                </td>
+
+                <td class="px-6 py-4">
+
+                    <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
+
+                        {{ $product->minimum_stock }}
+
+                    </span>
+
+                </td>
+
+                <td class="px-6 py-4">
+
+                    @if($product->isOutOfStock())
+
+                    <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm">
+                        Out of Stock
+                    </span>
+
+
+                    @elseif($product->isLowStock())
+
+                    <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm">
+                        Low Stock
+                    </span>
+
+
+                    @else
+
+                    <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">
+                        Available
+                    </span>
+
+                    @endif
 
                 </td>
 
@@ -324,7 +383,7 @@
 
             <tr>
 
-                <td colspan="7" class="text-center py-10">
+                <td colspan="9" class="text-center py-10">
 
                     <i class="fas fa-box-open text-5xl text-gray-400 mb-3"></i>
 

@@ -61,7 +61,7 @@
 
 <!-- Dashboard Statistics -->
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
 
 
     <!-- Total Products -->
@@ -232,143 +232,238 @@
 
     </div>
 
-</div>
 
+    <!-- Low Stock Products -->
 
+    <div class="bg-white rounded-xl shadow p-6">
 
-<!-- Latest Products -->
+        <div class="flex justify-between items-center">
 
-<div class="flex justify-between items-center mb-6">
+            <div>
 
-    <h2 class="text-3xl font-bold">
+                <p class="text-gray-500">
+                    Low Stock
+                </p>
 
-        Latest Products
+                <h2 class="text-3xl font-bold text-yellow-600 mt-2">
+                    {{ $lowStockProducts }}
+                </h2>
 
-    </h2>
+            </div>
 
-    <a
-        href="{{ route('products.index') }}"
-        class="text-indigo-600 hover:text-indigo-800 font-semibold">
+            <div class="bg-yellow-100 p-4 rounded-full">
 
-        View All →
+                <i class="fas fa-exclamation-triangle text-yellow-600 text-2xl"></i>
 
-    </a>
-
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-    @if($products->count())
-
-    @foreach($products as $product)
-
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
-
-        <!-- Product Image -->
-        <div class="h-56 bg-gray-100 flex items-center justify-center">
-
-            @if($product->image)
-
-            <img
-                src="{{ asset('storage/'.$product->image) }}"
-                alt="{{ $product->name }}"
-                class="w-full h-full object-cover">
-
-            @else
-
-            <i class="fas fa-box text-6xl text-gray-400"></i>
-
-            @endif
+            </div>
 
         </div>
 
-        <div class="p-5">
+    </div>
 
-            <!-- Name -->
-            <h3 class="text-xl font-bold mb-2">
 
-                {{ $product->name }}
 
-            </h3>
+    <!-- Out Of Stock Products -->
 
-            <!-- Description -->
-            <p class="text-gray-600 text-sm mb-4">
+    <div class="bg-white rounded-xl shadow p-6">
 
-                {{ Str::limit($product->description, 80) }}
+        <div class="flex justify-between items-center">
 
-            </p>
+            <div>
 
-            <!-- Category & Status -->
-            <div class="flex justify-between items-center mb-4">
+                <p class="text-gray-500">
+                    Out Of Stock
+                </p>
 
-                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                <h2 class="text-3xl font-bold text-red-600 mt-2">
+                    {{ $outOfStockProducts }}
+                </h2>
 
-                    {{ $product->category }}
+            </div>
 
-                </span>
+            <div class="bg-red-100 p-4 rounded-full">
 
-                @if($product->status == 'Active')
+                <i class="fas fa-times-circle text-red-600 text-2xl"></i>
 
-                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+            </div>
 
-                    Active
+        </div>
 
-                </span>
+    </div>
+
+</div>
+
+    <!-- Latest Products -->
+
+    <div class="flex justify-between items-center mb-6">
+
+        <h2 class="text-3xl font-bold">
+
+            Latest Products
+
+        </h2>
+
+        <a
+            href="{{ route('products.index') }}"
+            class="text-indigo-600 hover:text-indigo-800 font-semibold">
+
+            View All →
+
+        </a>
+
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        @if($products->count())
+
+        @foreach($products as $product)
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
+
+            <!-- Product Image -->
+            <div class="h-56 bg-gray-100 flex items-center justify-center">
+
+                @if($product->image)
+
+                <img
+                    src="{{ asset('storage/'.$product->image) }}"
+                    alt="{{ $product->name }}"
+                     class="w-full h-full object-contain p-3">
 
                 @else
 
-                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-
-                    Inactive
-
-                </span>
+                <i class="fas fa-box text-6xl text-gray-400"></i>
 
                 @endif
 
             </div>
 
-            <!-- Price & Quantity -->
-            <div class="flex justify-between items-center mb-5">
+            <div class="p-5">
 
-                <div>
+                <!-- Name -->
+                <h3 class="text-xl font-bold mb-2">
 
-                    <p class="text-2xl font-bold text-indigo-600">
+                    {{ $product->name }}
 
-                        ₹{{ number_format($product->price,2) }}
+                </h3>
 
-                    </p>
+                <!-- Description -->
+                <p class="text-gray-600 text-sm mb-4">
+
+                    {{ Str::limit($product->description, 80) }}
+
+                </p>
+
+                <!-- Category & Status -->
+                <div class="flex justify-between items-center mb-4">
+
+                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+
+                        {{ $product->category }}
+
+                    </span>
+
+                    @if($product->status == 'Active')
+
+                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+
+                        Active
+
+                    </span>
+
+                    @else
+
+                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+
+                        Inactive
+
+                    </span>
+
+                    @endif
 
                 </div>
 
-                <span class="bg-gray-100 px-3 py-1 rounded-lg text-sm">
+                <!-- Price & Quantity -->
+                <div class="flex justify-between items-center mb-5">
 
-                    Stock :
-                    {{ $product->quantity }}
+                    <div>
 
-                </span>
+                        <p class="text-2xl font-bold text-indigo-600">
+
+                            ₹{{ number_format($product->price,2) }}
+
+                        </p>
+
+                    </div>
+
+                    <span class="bg-gray-100 px-3 py-1 rounded-lg text-sm">
+
+                        Stock :
+                        {{ $product->quantity }}
+
+                    </span>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-3">
+
+                    <a
+                        href="{{ route('products.show',$product) }}"
+                        class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-center">
+
+                        <i class="fas fa-eye mr-1"></i>
+
+                        View
+
+                    </a>
+
+                    <a
+                        href="{{ route('products.edit',$product) }}"
+                        class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg text-center">
+
+                        <i class="fas fa-edit mr-1"></i>
+
+                        Edit
+
+                    </a>
+
+                </div>
 
             </div>
 
-            <!-- Buttons -->
-            <div class="flex gap-3">
+        </div>
+
+        @endforeach
+
+        @else
+
+        <div class="col-span-3">
+
+            <div class="bg-white rounded-xl shadow p-12 text-center">
+
+                <i class="fas fa-box-open text-6xl text-gray-300 mb-4"></i>
+
+                <h3 class="text-2xl font-bold text-gray-600">
+
+                    No Products Found
+
+                </h3>
+
+                <p class="text-gray-500 mt-2">
+
+                    Start by adding your first product.
+
+                </p>
 
                 <a
-                    href="{{ route('products.show',$product) }}"
-                    class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-center">
+                    href="{{ route('products.create') }}"
+                    class="inline-block mt-6 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg">
 
-                    <i class="fas fa-eye mr-1"></i>
+                    <i class="fas fa-plus mr-2"></i>
 
-                    View
-
-                </a>
-
-                <a
-                    href="{{ route('products.edit',$product) }}"
-                    class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg text-center">
-
-                    <i class="fas fa-edit mr-1"></i>
-
-                    Edit
+                    Add Product
 
                 </a>
 
@@ -376,46 +471,8 @@
 
         </div>
 
-    </div>
-
-    @endforeach
-
-    @else
-
-    <div class="col-span-3">
-
-        <div class="bg-white rounded-xl shadow p-12 text-center">
-
-            <i class="fas fa-box-open text-6xl text-gray-300 mb-4"></i>
-
-            <h3 class="text-2xl font-bold text-gray-600">
-
-                No Products Found
-
-            </h3>
-
-            <p class="text-gray-500 mt-2">
-
-                Start by adding your first product.
-
-            </p>
-
-            <a
-                href="{{ route('products.create') }}"
-                class="inline-block mt-6 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg">
-
-                <i class="fas fa-plus mr-2"></i>
-
-                Add Product
-
-            </a>
-
-        </div>
+        @endif
 
     </div>
 
-    @endif
-
-</div>
-
-@endsection
+    @endsection

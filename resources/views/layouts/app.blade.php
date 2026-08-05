@@ -74,7 +74,7 @@
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased min-h-screen flex flex-col">
     <!-- Navigation -->
     <nav class="navbar fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -120,7 +120,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="pt-16">
+    <main class="pt-16 flex-grow">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- Flash Messages -->
             @if(session('success'))
@@ -142,7 +142,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8 mt-12">
+    <footer class="bg-gray-900 text-white py-8 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
