@@ -86,34 +86,57 @@
                 </div>
 
                 <!-- Product Info Grid -->
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <div>
-
-                        <h4 class="text-sm font-medium text-gray-500 mb-1">
-                            Available Quantity
+                        <h4 class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                            Current Stock
                         </h4>
-
-                        <p class="text-2xl font-bold text-gray-800">
+                        <p class="text-2xl font-bold font-mono {{ $product->quantity <= $product->minimum_stock ? 'text-red-600' : 'text-gray-800' }}">
                             {{ $product->quantity }}
                         </p>
-
                     </div>
 
-
                     <div>
-
-                        <h4 class="text-sm font-medium text-gray-500 mb-1">
-                            Minimum Stock Alert
+                        <h4 class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                            Min Buffer
                         </h4>
-
-                        <p class="text-2xl font-bold text-yellow-600">
+                        <p class="text-2xl font-bold font-mono text-yellow-600">
                             {{ $product->minimum_stock }}
                         </p>
-
                     </div>
+
                     <div>
-                        <h4 class="text-sm font-medium text-gray-500 mb-1">Created Date</h4>
-                        <p class="text-lg text-gray-800">{{ $product->created_at->format('M d, Y') }}</p>
+                        <h4 class="text-xs font-semibold text-gray-500 uppercase mb-1">SKU</h4>
+                        <p class="text-sm font-bold font-mono text-indigo-700">{{ $product->sku ?? 'N/A' }}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-semibold text-gray-500 uppercase mb-1">Supplier</h4>
+                        @if($product->supplier)
+                            <a href="{{ route('suppliers.show', $product->supplier->id) }}" class="text-xs font-bold text-indigo-600 hover:underline block truncate">
+                                {{ $product->supplier->name }}
+                            </a>
+                        @else
+                            <span class="text-xs text-gray-400">Unassigned</span>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Barcode & QR Code Section -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-center sm:text-left flex-1">
+                        <span class="text-[11px] font-bold uppercase text-gray-500 block mb-1">Scannable Code-128 Barcode</span>
+                        <svg id="productBarcodeSvg" class="mx-auto sm:mx-0"></svg>
+                        <div class="text-xs font-mono font-bold text-gray-700 mt-1">{{ $product->barcode ?? $product->sku }}</div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div id="productQrCode" class="bg-white p-1 rounded border shadow-xs"></div>
+                        <div class="text-left">
+                            <span class="text-xs font-bold text-gray-800 block">2D QR Code</span>
+                            <a href="{{ route('inventory.barcodes.print', ['selected_products' => [$product->id], 'repeat' => 4]) }}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-bold">
+                                <i class="fas fa-print"></i> Print Stickers
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -163,5 +186,86 @@
             <p class="text-gray-600 font-mono">{{ $product->id }}</p>
         </div>
     </div>
+    <!-- Stock Movement Audit Trail History -->
+    <div class="card p-6 mt-6">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-history text-indigo-600"></i> Stock Movement Audit Ledger
+                </h3>
+                <p class="text-xs text-gray-500">Historical trail of receipts, dispatches, and adjustments for this SKU.</p>
+            </div>
+            <a href="{{ route('inventory.ledger', ['product_id' => $product->id]) }}" class="text-xs font-bold text-indigo-600 hover:underline">
+                View All in Ledger &rarr;
+            </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                    <tr class="bg-gray-50 border-b uppercase font-semibold text-gray-500">
+                        <th class="p-2.5">Date</th>
+                        <th class="p-2.5">Type</th>
+                        <th class="p-2.5 text-center">Previous</th>
+                        <th class="p-2.5 text-center">Delta</th>
+                        <th class="p-2.5 text-center">Balance</th>
+                        <th class="p-2.5">Reason</th>
+                        <th class="p-2.5">Reference</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($product->stockMovements as $move)
+                        <tr>
+                            <td class="p-2.5 text-gray-500 whitespace-nowrap">{{ $move->created_at->format('M d, Y h:i A') }}</td>
+                            <td class="p-2.5 font-bold uppercase text-[10px]">
+                                <span class="px-2 py-0.5 rounded {{ $move->quantity_change > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
+                                    {{ str_replace('_', ' ', $move->type) }}
+                                </span>
+                            </td>
+                            <td class="p-2.5 text-center font-mono">{{ $move->previous_quantity }}</td>
+                            <td class="p-2.5 text-center font-mono font-bold {{ $move->quantity_change > 0 ? 'text-emerald-600' : 'text-red-600' }}">
+                                {{ $move->quantity_change > 0 ? '+' : '' }}{{ $move->quantity_change }}
+                            </td>
+                            <td class="p-2.5 text-center font-mono font-bold text-gray-900">{{ $move->new_quantity }}</td>
+                            <td class="p-2.5 text-gray-700">{{ $move->reason ?? 'Stock transaction' }}</td>
+                            <td class="p-2.5 font-mono text-gray-400">{{ $move->reference_no }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="p-4 text-center text-gray-400">No stock audit history recorded yet.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Render 1D Barcode
+        try {
+            JsBarcode("#productBarcodeSvg", "{{ $product->barcode ?? $product->sku ?? '89000000' }}", {
+                format: "CODE128",
+                displayValue: false,
+                height: 40,
+                margin: 0
+            });
+        } catch(e) {}
+
+        // Render 2D QR Code
+        try {
+            new QRCode(document.getElementById("productQrCode"), {
+                text: "{{ route('products.show', $product->id) }}",
+                width: 50,
+                height: 50,
+                colorDark: "#1e1b4b",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        } catch(e) {}
+    });
+</script>
 @endsection

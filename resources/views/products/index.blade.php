@@ -11,16 +11,37 @@
     </h1>
 
 
-    <div class="flex gap-3">
+    <div class="flex flex-wrap gap-2">
+
+        <!-- Barcode Studio -->
+        <a href="{{ route('inventory.barcodes') }}"
+            class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 shadow">
+            <i class="fas fa-barcode"></i>
+            Barcodes
+        </a>
+
+        <!-- Webcam Scanner -->
+        <a href="{{ route('inventory.scanner') }}"
+            class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 shadow">
+            <i class="fas fa-camera"></i>
+            Scan
+        </a>
+
+        <!-- Stock Ledger -->
+        <a href="{{ route('inventory.ledger') }}"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 shadow">
+            <i class="fas fa-history"></i>
+            Ledger
+        </a>
 
         <!-- Export Excel -->
 
         <a href="{{ route('products.export') }}"
-            class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg">
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 shadow">
 
             <i class="fas fa-file-excel"></i>
 
-            Export Excel
+            Export
 
         </a>
 
@@ -28,7 +49,7 @@
         <!-- Add Product -->
 
         <a href="{{ route('products.create') }}"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 shadow">
 
             <i class="fas fa-plus"></i>
 
@@ -239,15 +260,21 @@
 
                 <td class="px-6 py-4">
 
-                    <div class="font-semibold">
+                    <div class="font-semibold text-gray-900">
 
-                        {{ $product->name }}
+                        <a href="{{ route('products.show', $product) }}" class="hover:text-indigo-600">
+                            {{ $product->name }}
+                        </a>
 
                     </div>
 
-                    <div class="text-gray-500 text-sm">
+                    <div class="text-xs font-mono text-indigo-600 font-semibold mt-0.5">
+                        {{ $product->sku ?? 'NO-SKU' }}
+                    </div>
 
-                        {{ Str::limit($product->description,50) }}
+                    <div class="text-gray-500 text-xs mt-0.5">
+
+                        {{ Str::limit($product->description, 45) }}
 
                     </div>
 
@@ -339,6 +366,14 @@
                 <td class="px-6 py-4 text-center">
 
                     <div class="flex justify-center gap-3">
+
+                        <!-- Barcode Print -->
+                        <a href="{{ route('inventory.barcodes.print', ['selected_products' => [$product->id], 'repeat' => 2]) }}"
+                            target="_blank"
+                            title="Print Barcode Labels"
+                            class="bg-gray-700 hover:bg-gray-800 text-white px-3 py-2 rounded">
+                            <i class="fas fa-barcode"></i>
+                        </a>
 
                         <!-- View -->
                         <a href="{{ route('products.show', $product) }}"

@@ -263,48 +263,82 @@
 
             </div>
 
+            <!-- SKU & Barcode Inputs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div>
+                    <label class="block font-semibold mb-2">
+                        SKU (Stock Keeping Unit)
+                    </label>
+                    <input
+                        type="text"
+                        name="sku"
+                        value="{{ old('sku', $product->sku ?? '') }}"
+                        class="w-full border rounded-lg px-4 py-3"
+                        placeholder="Leave blank to auto-generate (e.g. SKU-ELE-1049)">
+                    <p class="text-xs text-gray-500 mt-1">Unique item inventory tracking identifier.</p>
+                    @error('sku')
+                        <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                    @enderror
+                </div>
 
+                <div>
+                    <label class="block font-semibold mb-2">
+                        Barcode (Code 128 / UPC)
+                    </label>
+                    <input
+                        type="text"
+                        name="barcode"
+                        value="{{ old('barcode', $product->barcode ?? '') }}"
+                        class="w-full border rounded-lg px-4 py-3"
+                        placeholder="Leave blank to auto-generate (e.g. 89012340001)">
+                    <p class="text-xs text-gray-500 mt-1">Scanned by thermal and webcam barcode scanners.</p>
+                    @error('barcode')
+                        <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
 
-            <!-- Status -->
+            <!-- Assigned Supplier & Status -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div>
+                    <label class="block font-semibold mb-2">
+                        Assigned Supplier / Vendor
+                    </label>
+                    <select name="supplier_id" class="w-full border rounded-lg px-4 py-3">
+                        <option value="">No Supplier Assigned</option>
+                        @if(isset($suppliers))
+                            @foreach($suppliers as $sup)
+                                <option value="{{ $sup->id }}" {{ old('supplier_id', $product->supplier_id ?? '') == $sup->id ? 'selected' : '' }}>
+                                    {{ $sup->name }} ({{ $sup->lead_time_days }} days lead time)
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                    @error('supplier_id')
+                        <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <div class="mt-6">
-
-                <label class="block font-semibold mb-2">
-
-                    Status
-
-                </label>
-
-                <select
-                    name="status"
-                    class="w-full border rounded-lg px-4 py-3">
-
-                    <option value="Active"
-                        {{ old('status',$product->status ?? 'Active')=='Active' ? 'selected' : '' }}>
-
-                        Active
-
-                    </option>
-
-                    <option value="Inactive"
-                        {{ old('status',$product->status ?? '')=='Inactive' ? 'selected' : '' }}>
-
-                        Inactive
-
-                    </option>
-
-                </select>
-
-                @error('status')
-
-                <p class="text-red-600 mt-1">
-
-                    {{ $message }}
-
-                </p>
-
-                @enderror
-
+                <div>
+                    <label class="block font-semibold mb-2">
+                        Status
+                    </label>
+                    <select
+                        name="status"
+                        class="w-full border rounded-lg px-4 py-3">
+                        <option value="Active"
+                            {{ old('status',$product->status ?? 'Active')=='Active' ? 'selected' : '' }}>
+                            Active
+                        </option>
+                        <option value="Inactive"
+                            {{ old('status',$product->status ?? '')=='Inactive' ? 'selected' : '' }}>
+                            Inactive
+                        </option>
+                    </select>
+                    @error('status')
+                        <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             <!-- Product Image -->
