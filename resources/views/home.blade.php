@@ -25,21 +25,45 @@
 
             </p>
 
-            <div class="mt-8 flex gap-4">
+            <div class="mt-8 flex flex-wrap gap-3">
 
                 <a
                     href="{{ route('products.index') }}"
-                    class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
+                    class="bg-white text-indigo-600 px-5 py-2.5 rounded-lg font-semibold hover:bg-gray-100 shadow">
 
                     View Products
 
                 </a>
 
                 <a
-                    href="{{ route('products.create') }}"
-                    class="border border-white px-6 py-3 rounded-lg hover:bg-white hover:text-indigo-600">
+                    href="{{ route('inventory.barcodes') }}"
+                    class="bg-amber-400 hover:bg-amber-500 text-gray-900 px-5 py-2.5 rounded-lg font-semibold shadow flex items-center gap-1.5">
 
-                    Add Product
+                    <i class="fas fa-barcode"></i> Barcode Studio
+
+                </a>
+
+                <a
+                    href="{{ route('inventory.ledger') }}"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow flex items-center gap-1.5">
+
+                    <i class="fas fa-history"></i> Stock Ledger
+
+                </a>
+
+                <a
+                    href="{{ route('suppliers.index') }}"
+                    class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow flex items-center gap-1.5">
+
+                    <i class="fas fa-truck"></i> Suppliers
+
+                </a>
+
+                <a
+                    href="{{ route('desktop.studio') }}"
+                    class="bg-gray-900/60 hover:bg-gray-900/80 text-white border border-white/30 px-5 py-2.5 rounded-lg font-semibold shadow flex items-center gap-1.5">
+
+                    <i class="fas fa-desktop"></i> Desktop Hub
 
                 </a>
 
@@ -55,6 +79,61 @@
 
     </div>
 
+</div>
+
+<!-- Enterprise Navigation Studios Banner -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+    <a href="{{ route('inventory.barcodes') }}" class="bg-white rounded-xl shadow p-4 border-t-4 border-amber-500 hover:-translate-y-1 transition group">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg font-bold">
+                <i class="fas fa-barcode"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-900 text-sm group-hover:text-amber-600">Barcode &amp; QR Studio</h3>
+                <span class="text-[11px] text-gray-500">Live Webcam Scanner &amp; Labels</span>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500">Generate Code-128 barcodes, thermal print stickers, and scan via camera.</p>
+    </a>
+
+    <a href="{{ route('inventory.ledger') }}" class="bg-white rounded-xl shadow p-4 border-t-4 border-blue-500 hover:-translate-y-1 transition group">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-lg font-bold">
+                <i class="fas fa-history"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-900 text-sm group-hover:text-blue-600">Stock Audit Ledger</h3>
+                <span class="text-[11px] text-gray-500">In / Out Delta Audits</span>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500">Complete audit trail of stock adjustments with delta reasons and POs.</p>
+    </a>
+
+    <a href="{{ route('suppliers.index') }}" class="bg-white rounded-xl shadow p-4 border-t-4 border-indigo-500 hover:-translate-y-1 transition group">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg font-bold">
+                <i class="fas fa-truck"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-900 text-sm group-hover:text-indigo-600">Supplier Directory</h3>
+                <span class="text-[11px] text-gray-500">Vendor Reliability &amp; POs</span>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500">Manage vendor contact sheets, delivery lead times, and reliability ratings.</p>
+    </a>
+
+    <a href="{{ route('desktop.studio') }}" class="bg-white rounded-xl shadow p-4 border-t-4 border-purple-500 hover:-translate-y-1 transition group">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-lg font-bold">
+                <i class="fas fa-desktop"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-900 text-sm group-hover:text-purple-600">Desktop Studio</h3>
+                <span class="text-[11px] text-gray-500">Hotkeys &amp; OS Push Radar</span>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500">Native push notifications, global hotkeys (Ctrl+K), and system tray status.</p>
+    </a>
 </div>
 
 
